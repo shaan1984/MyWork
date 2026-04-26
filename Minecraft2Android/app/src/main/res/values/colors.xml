@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2D5A27</color>
+    <color name="colorPrimaryDark">#1A3A17</color>
+    <color name="colorAccent">#8B4513</color>
+    <color name="colorBackground">#1A1A2E</color>
+    <color name="colorHUD">#80000000</color>
+    <color name="colorHealthBar">#FF4444</color>
+    <color name="colorHungerBar">#FF8800</color>
+    <color name="colorXPBar">#44FF44</color>
+    <color name="colorAmmoBar">#4444FF</color>
+    <color name="colorBossHP">#AA00AA</color>
+    <color name="colorButtonText">#FFFFFF</color>
+    <color name="colorMenuBg">#CC000000</color>
+</resources>
