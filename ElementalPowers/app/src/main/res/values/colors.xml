@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App background -->
+    <color name="bg_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+
+    <!-- Element palette -->
+    <color name="fire">#FF4500</color>
+    <color name="water">#1E90FF</color>
+    <color name="earth">#8B6914</color>
+    <color name="ice">#00BFFF</color>
+    <color name="life">#2E8B57</color>
+    <color name="tech">#7B2FBE</color>
+    <color name="heat">#FF6347</color>
+    <color name="earthquake">#8B5E3C</color>
+
+    <!-- HP bar -->
+    <color name="hp_high">#4CAF50</color>
+    <color name="hp_mid">#FFC107</color>
+    <color name="hp_low">#F44336</color>
+
+    <!-- Material theme required -->
+    <color name="colorPrimary">#FF4500</color>
+    <color name="colorPrimaryVariant">#CC3300</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">#FF6B35</color>
+    <color name="colorOnSecondary">#000000</color>
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorOnSurface">#FFFFFF</color>
+</resources>
