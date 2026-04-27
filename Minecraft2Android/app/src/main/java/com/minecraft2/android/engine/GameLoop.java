@@ -1,5 +1,8 @@
 package com.minecraft2.android.engine;
 
+import android.graphics.Canvas;
+import android.view.SurfaceHolder;
+
 public class GameLoop implements Runnable {
 
     private static final long NANOS_PER_SECOND = 1_000_000_000L;
@@ -33,7 +36,23 @@ public class GameLoop implements Runnable {
                 lastFrameTime = currentTime;
 
                 gameEngine.update(deltaTime);
-                gameView.postInvalidate();
+
+                SurfaceHolder holder = gameView.getHolder();
+                Canvas canvas = null;
+                try {
+                    canvas = holder.lockCanvas();
+                    if (canvas != null) {
+                        gameView.drawFrame(canvas);
+                    }
+                } catch (Exception e) {
+                    // Surface not ready yet
+                } finally {
+                    if (canvas != null) {
+                        try {
+                            holder.unlockCanvasAndPost(canvas);
+                        } catch (Exception ignored) {}
+                    }
+                }
 
                 frameCount++;
                 if (currentTime - fpsTimer >= NANOS_PER_SECOND) {

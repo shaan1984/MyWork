@@ -24,6 +24,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Thread gameThread;
 
     private final Paint debugPaint = new Paint();
+    private final Paint loadingPaint = new Paint();
     private boolean showDebug = false;
 
     public GameView(Context context, GameEngine engine) {
@@ -39,26 +40,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         debugPaint.setColor(Color.WHITE);
         debugPaint.setTextSize(28f);
+
+        loadingPaint.setColor(Color.WHITE);
+        loadingPaint.setTextSize(48f);
+        loadingPaint.setTextAlign(Paint.Align.CENTER);
+        loadingPaint.setAntiAlias(true);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        renderer.init(getWidth(), getHeight());
-        hud.init(getWidth(), getHeight());
-        inventoryUI.init(getWidth(), getHeight());
-        touchController.init(getWidth(), getHeight());
-
-        gameLoop = new GameLoop(gameEngine, this);
-        gameEngine.start(gameLoop);
-        gameThread = new Thread(gameLoop, "GameThread");
-        gameThread.start();
+        // Dimensions may be 0 here; surfaceChanged always fires after with real size
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        renderer.resize(width, height);
+        renderer.init(width, height);
         hud.init(width, height);
+        inventoryUI.init(width, height);
         touchController.init(width, height);
+
+        if (gameLoop == null) {
+            gameLoop = new GameLoop(gameEngine, this);
+            gameEngine.start(gameLoop);
+            gameThread = new Thread(gameLoop, "GameThread");
+            gameThread.start();
+        }
     }
 
     @Override
@@ -71,34 +77,44 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (canvas == null) return;
-
+    public void drawFrame(Canvas canvas) {
         World world = gameEngine.getWorld();
         Player player = gameEngine.getPlayer();
 
-        renderer.render(canvas, world, player);
+        if (world == null || player == null) {
+            canvas.drawColor(Color.BLACK);
+            int cx = canvas.getWidth() / 2;
+            int cy = canvas.getHeight() / 2;
+            canvas.drawText("Generating world...", cx, cy, loadingPaint);
+            return;
+        }
+
+        try {
+            renderer.render(canvas, world, player);
+        } catch (Exception e) {
+            canvas.drawColor(Color.BLACK);
+            return;
+        }
 
         if (inventoryUI.isVisible()) {
             inventoryUI.draw(canvas, player.getInventory());
         } else {
-            hud.draw(canvas, player);
-            touchController.draw(canvas);
+            try { hud.draw(canvas, player); } catch (Exception ignored) {}
+            try { touchController.draw(canvas); } catch (Exception ignored) {}
         }
 
         if (showDebug && gameLoop != null) {
             canvas.drawText("FPS: " + gameLoop.getFps(), 20, 60, debugPaint);
             canvas.drawText(String.format("XYZ: %.1f / %.1f / %.1f",
                     player.getX(), player.getY(), player.getZ()), 20, 100, debugPaint);
-            canvas.drawText("Biome: " + world.getBiomeAt((int)player.getX(), (int)player.getZ()), 20, 140, debugPaint);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return touchController.handleTouch(event, gameEngine.getPlayer(),
-                gameEngine.getWorld(), inventoryUI);
+        Player player = gameEngine.getPlayer();
+        World world = gameEngine.getWorld();
+        if (player == null || world == null) return true;
+        return touchController.handleTouch(event, player, world, inventoryUI);
     }
 }
