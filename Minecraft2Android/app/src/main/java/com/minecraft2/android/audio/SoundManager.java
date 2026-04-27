@@ -62,24 +62,27 @@ public class SoundManager {
 
     public void playGunSound(String gunType) {
         switch (gunType) {
-            case "PISTOL" -> playSound(SoundEffect.PISTOL_SHOOT, 0.8f, 1.0f);
-            case "SMG" -> playSound(SoundEffect.SMG_SHOOT, 0.7f, 1.1f);
-            case "RIFLE" -> playSound(SoundEffect.RIFLE_SHOOT, 0.9f, 1.0f);
-            case "SHOTGUN" -> playSound(SoundEffect.SHOTGUN_SHOOT, 1.0f, 0.9f);
-            case "SNIPER_RIFLE" -> playSound(SoundEffect.SNIPER_SHOOT, 1.0f, 0.8f);
-            case "RPG" -> { playSound(SoundEffect.RPG_SHOOT, 0.8f, 1.0f); playSound(SoundEffect.EXPLOSION); }
-            case "MINIGUN" -> playSound(SoundEffect.MINIGUN_SHOOT, 0.6f, 1.2f);
+            case "PISTOL": playSound(SoundEffect.PISTOL_SHOOT, 0.8f, 1.0f); break;
+            case "SMG": playSound(SoundEffect.SMG_SHOOT, 0.7f, 1.1f); break;
+            case "RIFLE": playSound(SoundEffect.RIFLE_SHOOT, 0.9f, 1.0f); break;
+            case "SHOTGUN": playSound(SoundEffect.SHOTGUN_SHOOT, 1.0f, 0.9f); break;
+            case "SNIPER_RIFLE": playSound(SoundEffect.SNIPER_SHOOT, 1.0f, 0.8f); break;
+            case "RPG": playSound(SoundEffect.RPG_SHOOT, 0.8f, 1.0f); playSound(SoundEffect.EXPLOSION); break;
+            case "MINIGUN": playSound(SoundEffect.MINIGUN_SHOOT, 0.6f, 1.2f); break;
         }
     }
 
     public void playFootstep(com.minecraft2.android.block.BlockType surface) {
-        SoundEffect sound = switch (surface) {
-            case GRASS, DIRT -> SoundEffect.FOOTSTEP_GRASS;
-            case STONE, COBBLESTONE, STONE_BRICKS -> SoundEffect.FOOTSTEP_STONE;
-            case SAND, GRAVEL -> SoundEffect.FOOTSTEP_SAND;
-            case OAK_PLANKS, BIRCH_PLANKS, SPRUCE_PLANKS -> SoundEffect.FOOTSTEP_WOOD;
-            default -> SoundEffect.FOOTSTEP_STONE;
-        };
+        SoundEffect sound;
+        if (surface == com.minecraft2.android.block.BlockType.GRASS || surface == com.minecraft2.android.block.BlockType.DIRT) {
+            sound = SoundEffect.FOOTSTEP_GRASS;
+        } else if (surface == com.minecraft2.android.block.BlockType.SAND || surface == com.minecraft2.android.block.BlockType.GRAVEL) {
+            sound = SoundEffect.FOOTSTEP_SAND;
+        } else if (surface == com.minecraft2.android.block.BlockType.OAK_PLANKS || surface == com.minecraft2.android.block.BlockType.BIRCH_PLANKS || surface == com.minecraft2.android.block.BlockType.SPRUCE_PLANKS) {
+            sound = SoundEffect.FOOTSTEP_WOOD;
+        } else {
+            sound = SoundEffect.FOOTSTEP_STONE;
+        }
         playSound(sound, 0.4f, 0.9f + (float)(Math.random() * 0.2f));
     }
 

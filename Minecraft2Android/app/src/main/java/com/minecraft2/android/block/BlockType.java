@@ -13,6 +13,7 @@ public enum BlockType {
     STONE(3, "Stone", Color.rgb(128, 128, 128), 4.0f, true, false),
     COBBLESTONE(4, "Cobblestone", Color.rgb(100, 100, 100), 3.5f, true, false),
     SAND(5, "Sand", Color.rgb(218, 210, 158), 0.6f, true, false),
+    SANDSTONE(200, "Sandstone", Color.rgb(210, 196, 138), 2.0f, true, false),
     GRAVEL(6, "Gravel", Color.rgb(150, 140, 130), 0.9f, true, false),
     BEDROCK(7, "Bedrock", Color.rgb(50, 50, 50), -1f, true, false),
     WATER(8, "Water", Color.argb(180, 30, 100, 200), 100f, false, true),
@@ -168,15 +169,12 @@ public enum BlockType {
                this == STARLIGHT_GLASS || this == BEACON || this == LAVA;
     }
     public int getLightLevel() {
-        return switch (this) {
-            case GLOWSTONE, SEA_LANTERN -> 15;
-            case TORCH, CAMPFIRE, LAVA -> 14;
-            case LANTERN -> 13;
-            case CRYSTAL_BLOCK -> 10;
-            case BEACON -> 15;
-            case STARLIGHT_GLASS -> 8;
-            default -> 0;
-        };
+        if (this == GLOWSTONE || this == SEA_LANTERN || this == BEACON) return 15;
+        if (this == TORCH || this == CAMPFIRE || this == LAVA) return 14;
+        if (this == LANTERN) return 13;
+        if (this == CRYSTAL_BLOCK) return 10;
+        if (this == STARLIGHT_GLASS) return 8;
+        return 0;
     }
     public boolean isBreakable() { return hardness >= 0; }
     public float getBlastResistance() { return hardness * 3.0f; }

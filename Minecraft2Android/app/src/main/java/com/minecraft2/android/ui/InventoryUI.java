@@ -134,15 +134,15 @@ public class InventoryUI {
 
     private int getColorForItem(ItemStack item) {
         // Simplified color mapping
-        return switch (item.getType()) {
-            case IRON_INGOT -> Color.rgb(200, 200, 210);
-            case GOLD_INGOT -> Color.rgb(220, 180, 50);
-            case DIAMOND -> Color.rgb(50, 200, 220);
-            case TITANIUM_INGOT -> Color.rgb(150, 180, 220);
-            case ADAMANTITE_INGOT -> Color.rgb(180, 50, 180);
-            case CRYSTAL_SHARD -> Color.rgb(180, 240, 255);
-            default -> Color.rgb(130, 100, 70);
-        };
+        switch (item.getType()) {
+            case IRON_INGOT: return Color.rgb(200, 200, 210);
+            case GOLD_INGOT: return Color.rgb(220, 180, 50);
+            case DIAMOND: return Color.rgb(50, 200, 220);
+            case TITANIUM_INGOT: return Color.rgb(150, 180, 220);
+            case ADAMANTITE_INGOT: return Color.rgb(180, 50, 180);
+            case CRYSTAL_SHARD: return Color.rgb(180, 240, 255);
+            default: return Color.rgb(130, 100, 70);
+        }
     }
 
     public boolean handleTouch(MotionEvent event, Inventory inventory) {

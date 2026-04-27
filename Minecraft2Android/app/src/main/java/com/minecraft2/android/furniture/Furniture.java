@@ -67,45 +67,37 @@ public class Furniture {
     private void drawFurnitureDetails(Canvas canvas, int sx, int sy, int bs, int w, int h) {
         paint.setColor(android.graphics.Color.argb(80, 0, 0, 0));
         switch (type) {
-            case CHAIR -> {
-                // Back of chair
+            case CHAIR:
                 canvas.drawRect(sx, sy - h, sx + w * 0.15f, sy - h * 0.4f, paint);
                 canvas.drawRect(sx + w * 0.85f, sy - h, sx + w, sy - h * 0.4f, paint);
-            }
-            case BED -> {
-                // Pillow
+                break;
+            case BED:
                 paint.setColor(android.graphics.Color.rgb(240, 240, 250));
                 canvas.drawRect(sx + 4, sy - h + 4, sx + w - 4, sy - h * 0.35f, paint);
-                // Blanket
                 paint.setColor(android.graphics.Color.rgb(180, 80, 80));
                 canvas.drawRect(sx + 4, sy - h * 0.35f, sx + w - 4, sy - 4, paint);
-            }
-            case LAMP -> {
-                // Lamp shade
+                break;
+            case LAMP:
                 paint.setColor(android.graphics.Color.rgb(255, 240, 180));
                 canvas.drawCircle(sx + w / 2f, sy - h + 10, w * 0.4f, paint);
-                // Glow
                 paint.setColor(android.graphics.Color.argb(60, 255, 220, 100));
                 canvas.drawCircle(sx + w / 2f, sy - h / 2f, w * 0.8f, paint);
-            }
-            case TABLE -> {
-                // Tabletop
+                break;
+            case TABLE:
                 paint.setColor(android.graphics.Color.rgb(160, 120, 70));
                 canvas.drawRect(sx - 4, sy - h, sx + w + 4, sy - h + 8, paint);
-            }
-            case TELEVISION -> {
-                // Screen
+                break;
+            case TELEVISION:
                 paint.setColor(android.graphics.Color.rgb(20, 60, 120));
                 canvas.drawRect(sx + 6, sy - h + 6, sx + w - 6, sy - 16, paint);
-            }
-            case FIREPLACE -> {
-                // Fire
+                break;
+            case FIREPLACE:
                 paint.setColor(android.graphics.Color.rgb(255, 100, 20));
                 canvas.drawRect(sx + w/4, sy - h/2, sx + w * 3/4, sy - 4, paint);
                 paint.setColor(android.graphics.Color.rgb(255, 200, 20));
                 canvas.drawRect(sx + w/3, sy - h/2 - 8, sx + w * 2/3, sy - h/4, paint);
-            }
-            default -> {}
+                break;
+            default: break;
         }
     }
 

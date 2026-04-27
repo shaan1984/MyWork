@@ -227,35 +227,6 @@ class ShadowCreeper extends Mob {
     }
 }
 
-class VoidStalker extends Mob {
-    private static final Random R = new Random();
-    private float teleportTimer = 0;
-    public VoidStalker(float x, float y, float z) { super(x, y, z, MobType.VOID_STALKER); }
-    @Override public void update(float dt, com.minecraft2.android.world.World world) {
-        super.update(dt, world);
-        teleportTimer -= dt;
-        if (teleportTimer <= 0 && targetPlayer != null && distanceTo(this, targetPlayer) < 5f) {
-            x = targetPlayer.getX() + R.nextFloat() * 4 - 2;
-            z = targetPlayer.getZ() + R.nextFloat() * 4 - 2;
-            teleportTimer = 3f;
-        }
-    }
-    @Override public List<ItemStack> getDrops() {
-        List<ItemStack> d = new ArrayList<>();
-        d.add(new ItemStack(ItemType.VOID_ESSENCE, 1 + R.nextInt(3)));
-        return d;
-    }
-}
-
-class CrystalGolemMinion extends Mob {
-    private static final Random R = new Random();
-    public CrystalGolemMinion(float x, float y, float z) { super(x, y, z, MobType.CRYSTAL_GOLEM_MINION); }
-    @Override public List<ItemStack> getDrops() {
-        List<ItemStack> d = new ArrayList<>();
-        d.add(new ItemStack(ItemType.CRYSTAL_SHARD, 2 + R.nextInt(5)));
-        return d;
-    }
-}
 
 class FireImp extends Mob {
     private static final Random R = new Random();

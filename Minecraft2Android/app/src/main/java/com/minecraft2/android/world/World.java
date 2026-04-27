@@ -3,6 +3,7 @@ package com.minecraft2.android.world;
 import com.minecraft2.android.block.BlockType;
 import com.minecraft2.android.entity.Player;
 import com.minecraft2.android.entity.mob.Mob;
+import com.minecraft2.android.entity.mob.MobSpawner;
 import com.minecraft2.android.entity.boss.Boss;
 import com.minecraft2.android.furniture.Furniture;
 import com.minecraft2.android.save.SaveManager;

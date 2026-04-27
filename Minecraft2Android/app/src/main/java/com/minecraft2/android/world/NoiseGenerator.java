@@ -48,7 +48,7 @@ public class NoiseGenerator {
     public double octaveNoise(float x, float y, int octaves, float persistence) {
         double total = 0, freq = 1, amp = 1, maxVal = 0;
         for (int i = 0; i < octaves; i++) {
-            total += noise(x * freq, y * freq) * amp;
+            total += noise((float)(x * freq), (float)(y * freq)) * amp;
             maxVal += amp;
             amp *= persistence;
             freq *= 2;

@@ -131,21 +131,17 @@ public class TouchController {
         float tx = event.getX(event.getActionIndex());
         float ty = event.getY(event.getActionIndex());
 
-        switch (action) {
-            case MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                handleTouchDown(tx, ty, pointerId, player, world, inventoryUI);
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
+            handleTouchDown(tx, ty, pointerId, player, world, inventoryUI);
+        } else if (action == MotionEvent.ACTION_MOVE) {
+            for (int i = 0; i < event.getPointerCount(); i++) {
+                int pid = event.getPointerId(i);
+                float px = event.getX(i), py = event.getY(i);
+                if (pid == joystickPointerId) updateJoystick(px, py, player);
+                else if (pid == lookPointerId) updateLook(px, py, player);
             }
-            case MotionEvent.ACTION_MOVE -> {
-                for (int i = 0; i < event.getPointerCount(); i++) {
-                    int pid = event.getPointerId(i);
-                    float px = event.getX(i), py = event.getY(i);
-                    if (pid == joystickPointerId) updateJoystick(px, py, player);
-                    else if (pid == lookPointerId) updateLook(px, py, player);
-                }
-            }
-            case MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                handleTouchUp(pointerId, player);
-            }
+        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
+            handleTouchUp(pointerId, player);
         }
         return true;
     }

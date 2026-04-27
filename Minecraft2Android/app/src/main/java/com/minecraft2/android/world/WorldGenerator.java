@@ -77,65 +77,32 @@ public class WorldGenerator {
 
     private void applySurfaceLayers(Chunk chunk, int lx, int lz, int wx, int wz,
                                      BiomeType biome, int surfaceHeight, int seaLevel) {
-        switch (biome) {
-            case DESERT, BADLANDS -> {
-                for (int y = surfaceHeight - 3; y <= surfaceHeight; y++) {
-                    chunk.setBlock(lx, y, lz, BlockType.SAND);
-                }
-                if (surfaceHeight - 4 >= 0) chunk.setBlock(lx, surfaceHeight - 4, lz, BlockType.SANDSTONE);
-            }
-            case SNOWY_TUNDRA, SNOWY_TAIGA, ICE_SPIRES -> {
-                chunk.setBlock(lx, surfaceHeight, lz, BlockType.SNOW);
-                for (int d = 1; d <= 3; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.DIRT);
-                }
-            }
-            case OCEAN, DEEP_OCEAN -> {
-                for (int d = 0; d <= 3; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, d == 0 ? BlockType.GRAVEL : BlockType.GRAVEL);
-                }
-            }
-            case BEACH -> {
-                for (int d = 0; d <= 3; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.SAND);
-                }
-            }
-            case SWAMP -> {
-                chunk.setBlock(lx, surfaceHeight, lz, BlockType.GRASS);
-                for (int d = 1; d <= 3; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.DIRT);
-                }
-            }
-            case CRYSTAL_CAVES -> {
-                chunk.setBlock(lx, surfaceHeight, lz, BlockType.CRYSTAL_BLOCK);
-                for (int d = 1; d <= 3; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.STONE);
-                }
-            }
-            case VOID_WASTES -> {
-                chunk.setBlock(lx, surfaceHeight, lz, BlockType.VOID_STONE);
-                for (int d = 1; d <= 4; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.VOID_STONE);
-                }
-            }
-            case LAVA_FIELDS -> {
-                chunk.setBlock(lx, surfaceHeight, lz, BlockType.LAVA_STONE);
-                for (int d = 1; d <= 3; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.NETHERRACK);
-                }
-            }
-            case TITANIUM_PEAKS -> {
-                chunk.setBlock(lx, surfaceHeight, lz, BlockType.STONE);
-                for (int d = 1; d <= 3; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.STONE);
-                }
-            }
-            default -> {
-                chunk.setBlock(lx, surfaceHeight, lz, BlockType.GRASS);
-                for (int d = 1; d <= 3; d++) {
-                    chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.DIRT);
-                }
-            }
+        if (biome == BiomeType.DESERT || biome == BiomeType.BADLANDS) {
+            for (int y = surfaceHeight - 3; y <= surfaceHeight; y++) chunk.setBlock(lx, y, lz, BlockType.SAND);
+            if (surfaceHeight - 4 >= 0) chunk.setBlock(lx, surfaceHeight - 4, lz, BlockType.SANDSTONE);
+        } else if (biome == BiomeType.SNOWY_TUNDRA || biome == BiomeType.SNOWY_TAIGA || biome == BiomeType.ICE_SPIRES) {
+            chunk.setBlock(lx, surfaceHeight, lz, BlockType.SNOW);
+            for (int d = 1; d <= 3; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.DIRT);
+        } else if (biome == BiomeType.OCEAN || biome == BiomeType.DEEP_OCEAN) {
+            for (int d = 0; d <= 3; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.GRAVEL);
+        } else if (biome == BiomeType.BEACH) {
+            for (int d = 0; d <= 3; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.SAND);
+        } else if (biome == BiomeType.SWAMP) {
+            chunk.setBlock(lx, surfaceHeight, lz, BlockType.GRASS);
+            for (int d = 1; d <= 3; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.DIRT);
+        } else if (biome == BiomeType.CRYSTAL_CAVES) {
+            chunk.setBlock(lx, surfaceHeight, lz, BlockType.CRYSTAL_BLOCK);
+            for (int d = 1; d <= 3; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.STONE);
+        } else if (biome == BiomeType.VOID_WASTES) {
+            for (int d = 0; d <= 4; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.VOID_STONE);
+        } else if (biome == BiomeType.LAVA_FIELDS) {
+            chunk.setBlock(lx, surfaceHeight, lz, BlockType.LAVA_STONE);
+            for (int d = 1; d <= 3; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.NETHERRACK);
+        } else if (biome == BiomeType.TITANIUM_PEAKS) {
+            for (int d = 0; d <= 3; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.STONE);
+        } else {
+            chunk.setBlock(lx, surfaceHeight, lz, BlockType.GRASS);
+            for (int d = 1; d <= 3; d++) chunk.setBlock(lx, surfaceHeight - d, lz, BlockType.DIRT);
         }
     }
 
@@ -269,12 +236,16 @@ public class WorldGenerator {
 
         BlockType logType, leafType;
         int height;
-        switch (biome) {
-            case BIRCH_FOREST -> { logType = BlockType.BIRCH_LOG; leafType = BlockType.BIRCH_LEAVES; height = 5 + r.nextInt(3); }
-            case JUNGLE -> { logType = BlockType.JUNGLE_LOG; leafType = BlockType.JUNGLE_LEAVES; height = 10 + r.nextInt(8); }
-            case TAIGA, SNOWY_TAIGA -> { logType = BlockType.SPRUCE_LOG; leafType = BlockType.SPRUCE_LEAVES; height = 8 + r.nextInt(4); }
-            case DARK_FOREST -> { logType = BlockType.DARK_OAK_LOG; leafType = BlockType.ACACIA_LEAVES; height = 6 + r.nextInt(3); }
-            default -> { logType = BlockType.OAK_LOG; leafType = BlockType.OAK_LEAVES; height = 4 + r.nextInt(3); }
+        if (biome == BiomeType.BIRCH_FOREST) {
+            logType = BlockType.BIRCH_LOG; leafType = BlockType.BIRCH_LEAVES; height = 5 + r.nextInt(3);
+        } else if (biome == BiomeType.JUNGLE) {
+            logType = BlockType.JUNGLE_LOG; leafType = BlockType.JUNGLE_LEAVES; height = 10 + r.nextInt(8);
+        } else if (biome == BiomeType.TAIGA || biome == BiomeType.SNOWY_TAIGA) {
+            logType = BlockType.SPRUCE_LOG; leafType = BlockType.SPRUCE_LEAVES; height = 8 + r.nextInt(4);
+        } else if (biome == BiomeType.DARK_FOREST) {
+            logType = BlockType.DARK_OAK_LOG; leafType = BlockType.ACACIA_LEAVES; height = 6 + r.nextInt(3);
+        } else {
+            logType = BlockType.OAK_LOG; leafType = BlockType.OAK_LEAVES; height = 4 + r.nextInt(3);
         }
 
         for (int y = surface + 1; y <= surface + height; y++) chunk.setBlock(tx, y, tz, logType);

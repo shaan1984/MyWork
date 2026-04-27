@@ -70,11 +70,11 @@ public abstract class Mob extends Entity {
         }
 
         switch (state) {
-            case IDLE -> updateIdle(deltaTime);
-            case WANDERING -> updateWander(deltaTime, world);
-            case CHASING -> updateChase(deltaTime, world);
-            case ATTACKING -> updateAttack(deltaTime);
-            case FLEEING -> updateFlee(deltaTime, world);
+            case IDLE: updateIdle(deltaTime); break;
+            case WANDERING: updateWander(deltaTime, world); break;
+            case CHASING: updateChase(deltaTime, world); break;
+            case ATTACKING: updateAttack(deltaTime); break;
+            case FLEEING: updateFlee(deltaTime, world); break;
         }
 
         if (!canFly) {

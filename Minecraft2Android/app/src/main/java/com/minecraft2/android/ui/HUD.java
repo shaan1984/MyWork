@@ -116,27 +116,27 @@ public class HUD {
     }
 
     private int getItemColor(ItemStack item) {
-        return switch (item.getType()) {
-            case OAK_PLANKS, OAK_LOG -> Color.rgb(150, 110, 60);
-            case STONE, COBBLESTONE -> Color.rgb(120, 120, 120);
-            case IRON_INGOT, IRON_PICKAXE, IRON_SWORD -> Color.rgb(200, 200, 210);
-            case DIAMOND, DIAMOND_SWORD, DIAMOND_PICKAXE -> Color.rgb(50, 200, 220);
-            case GOLD_INGOT, GOLD_SWORD -> Color.rgb(220, 180, 50);
-            case TITANIUM_INGOT, TITANIUM_SWORD -> Color.rgb(150, 180, 220);
-            case ADAMANTITE_INGOT, ADAMANTITE_SWORD -> Color.rgb(180, 50, 180);
-            case CRYSTAL_SHARD, CRYSTAL_BLADE -> Color.rgb(180, 240, 255);
-            case VOID_ESSENCE, VOID_BLADE -> Color.rgb(20, 0, 50);
-            case PISTOL -> Color.rgb(60, 60, 70);
-            case SHOTGUN -> Color.rgb(80, 70, 60);
-            case RIFLE -> Color.rgb(70, 60, 50);
-            case SNIPER_RIFLE -> Color.rgb(50, 60, 70);
-            case RPG -> Color.rgb(90, 60, 40);
-            case MINIGUN -> Color.rgb(80, 80, 90);
-            case BREAD, BEEF, PORK -> Color.rgb(200, 140, 80);
-            case TORCH -> Color.rgb(255, 200, 50);
-            case TNT -> Color.rgb(200, 60, 60);
-            default -> Color.rgb(160, 120, 80);
-        };
+        switch (item.getType()) {
+            case OAK_PLANKS: case OAK_LOG: return Color.rgb(150, 110, 60);
+            case STONE: return Color.rgb(120, 120, 120);
+            case IRON_INGOT: case IRON_PICKAXE: case IRON_SWORD: return Color.rgb(200, 200, 210);
+            case DIAMOND: case DIAMOND_SWORD: case DIAMOND_PICKAXE: return Color.rgb(50, 200, 220);
+            case GOLD_INGOT: case GOLD_SWORD: return Color.rgb(220, 180, 50);
+            case TITANIUM_INGOT: case TITANIUM_SWORD: return Color.rgb(150, 180, 220);
+            case ADAMANTITE_INGOT: case ADAMANTITE_SWORD: return Color.rgb(180, 50, 180);
+            case CRYSTAL_SHARD: case CRYSTAL_BLADE: return Color.rgb(180, 240, 255);
+            case VOID_ESSENCE: case VOID_BLADE: return Color.rgb(20, 0, 50);
+            case PISTOL: return Color.rgb(60, 60, 70);
+            case SHOTGUN: return Color.rgb(80, 70, 60);
+            case RIFLE: return Color.rgb(70, 60, 50);
+            case SNIPER_RIFLE: return Color.rgb(50, 60, 70);
+            case RPG: return Color.rgb(90, 60, 40);
+            case MINIGUN: return Color.rgb(80, 80, 90);
+            case BREAD: case BEEF: case PORK: return Color.rgb(200, 140, 80);
+            case TORCH: return Color.rgb(255, 200, 50);
+            case TNT: return Color.rgb(200, 60, 60);
+            default: return Color.rgb(160, 120, 80);
+        }
     }
 
     private void drawStatusBars(Canvas canvas, Player player) {
