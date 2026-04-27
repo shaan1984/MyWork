@@ -1,13 +1,13 @@
 package com.minecraft2.android;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.WindowManager;
-import androidx.appcompat.app.AppCompatActivity;
 import com.minecraft2.android.engine.GameEngine;
 import com.minecraft2.android.engine.GameView;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends Activity {
 
     private GameEngine gameEngine;
     private GameView gameView;
@@ -50,25 +50,17 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (gameEngine != null && gameEngine.isRunning()) {
-            showPauseDialog();
+            gameEngine.pause();
+            new AlertDialog.Builder(this)
+                    .setTitle("Paused")
+                    .setItems(new String[]{"Resume", "Save & Quit"}, (dialog, which) -> {
+                        if (which == 0) gameEngine.resume();
+                        else { gameEngine.saveWorld(); finish(); }
+                    })
+                    .setOnCancelListener(d -> gameEngine.resume())
+                    .show();
         } else {
             super.onBackPressed();
         }
-    }
-
-    private void showPauseDialog() {
-        gameEngine.pause();
-        new AlertDialog.Builder(this)
-                .setTitle("Paused")
-                .setItems(new String[]{"Resume", "Save & Quit"}, (dialog, which) -> {
-                    if (which == 0) {
-                        gameEngine.resume();
-                    } else {
-                        gameEngine.saveWorld();
-                        finish();
-                    }
-                })
-                .setOnCancelListener(d -> gameEngine.resume())
-                .show();
     }
 }

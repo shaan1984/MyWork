@@ -2,10 +2,12 @@ package com.minecraft2.android.save;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.minecraft2.android.entity.Player;
+import com.minecraft2.android.item.ItemStack;
+import com.minecraft2.android.item.ItemType;
 import com.minecraft2.android.world.World;
+import org.json.JSONObject;
+import org.json.JSONArray;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -16,7 +18,6 @@ import java.util.List;
 public class SaveManager {
 
     private final Context context;
-    private final Gson gson;
     private static final String WORLDS_DIR = "worlds";
     private static final String WORLD_FILE = "world.json";
     private static final String PREFS_NAME = "minecraft2_prefs";
@@ -36,60 +37,55 @@ public class SaveManager {
         public boolean raining;
         public long createdAt;
         public long lastPlayed;
-        public int playtimeMinutes;
-        public String[] spawnedBosses;
     }
 
     public SaveManager(Context context) {
         this.context = context;
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     public void saveWorld(String worldName, World world, Player player) {
-        WorldData data = new WorldData();
-        data.worldName = worldName;
-        data.seed = world.getSeed();
-        data.worldTick = world.getWorldTick();
-        data.timeOfDay = world.getTimeOfDay();
-        data.playerX = player.getX();
-        data.playerY = player.getY();
-        data.playerZ = player.getZ();
-        data.playerHealth = player.getHealth();
-        data.playerHunger = player.getHunger();
-        data.playerXP = player.getXp();
-        data.playerXPLevel = player.getXpLevel();
-        data.playerYaw = player.getYaw();
-        data.playerPitch = player.getPitch();
-        data.lastPlayed = System.currentTimeMillis();
-
-        // Serialize inventory
-        com.minecraft2.android.item.ItemStack[] slots = player.getInventory().getSlots();
-        data.inventoryTypes = new String[slots.length];
-        data.inventoryCounts = new int[slots.length];
-        for (int i = 0; i < slots.length; i++) {
-            if (slots[i] != null && !slots[i].isEmpty()) {
-                data.inventoryTypes[i] = slots[i].getType().name();
-                data.inventoryCounts[i] = slots[i].getCount();
-            } else {
-                data.inventoryTypes[i] = "AIR";
-                data.inventoryCounts[i] = 0;
-            }
-        }
-
         try {
+            JSONObject data = new JSONObject();
+            data.put("worldName", worldName);
+            data.put("seed", world.getSeed());
+            data.put("worldTick", world.getWorldTick());
+            data.put("timeOfDay", world.getTimeOfDay());
+            data.put("playerX", player.getX());
+            data.put("playerY", player.getY());
+            data.put("playerZ", player.getZ());
+            data.put("playerHealth", player.getHealth());
+            data.put("playerHunger", player.getHunger());
+            data.put("playerXP", player.getXp());
+            data.put("playerXPLevel", player.getXpLevel());
+            data.put("lastPlayed", System.currentTimeMillis());
+
+            JSONArray invTypes = new JSONArray();
+            JSONArray invCounts = new JSONArray();
+            ItemStack[] slots = player.getInventory().getSlots();
+            for (ItemStack slot : slots) {
+                if (slot != null && !slot.isEmpty()) {
+                    invTypes.put(slot.getType().name());
+                    invCounts.put(slot.getCount());
+                } else {
+                    invTypes.put("AIR");
+                    invCounts.put(0);
+                }
+            }
+            data.put("inventoryTypes", invTypes);
+            data.put("inventoryCounts", invCounts);
+
             File dir = new File(context.getFilesDir(), WORLDS_DIR + File.separator + worldName);
             dir.mkdirs();
             File file = new File(dir, WORLD_FILE);
             try (FileWriter writer = new FileWriter(file)) {
-                gson.toJson(data, writer);
+                writer.write(data.toString(2));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // Save to prefs for quick listing
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        prefs.edit().putString("world_" + worldName, worldName).apply();
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                .edit().putString("world_" + worldName, worldName).apply();
     }
 
     public WorldData loadWorld(String worldName) {
@@ -97,10 +93,29 @@ public class SaveManager {
             File file = new File(context.getFilesDir(),
                     WORLDS_DIR + File.separator + worldName + File.separator + WORLD_FILE);
             if (!file.exists()) return null;
+
+            StringBuilder sb = new StringBuilder();
             try (FileReader reader = new FileReader(file)) {
-                return gson.fromJson(reader, WorldData.class);
+                char[] buf = new char[4096];
+                int n;
+                while ((n = reader.read(buf)) != -1) sb.append(buf, 0, n);
             }
-        } catch (IOException e) {
+
+            JSONObject json = new JSONObject(sb.toString());
+            WorldData data = new WorldData();
+            data.worldName = json.optString("worldName", worldName);
+            data.seed = json.optLong("seed", System.currentTimeMillis());
+            data.worldTick = json.optLong("worldTick", 0);
+            data.timeOfDay = (float) json.optDouble("timeOfDay", 0.3);
+            data.playerX = (float) json.optDouble("playerX", 0);
+            data.playerY = (float) json.optDouble("playerY", 70);
+            data.playerZ = (float) json.optDouble("playerZ", 0);
+            data.playerHealth = (float) json.optDouble("playerHealth", 20);
+            data.playerHunger = (float) json.optDouble("playerHunger", 20);
+            data.playerXP = (float) json.optDouble("playerXP", 0);
+            data.playerXPLevel = json.optInt("playerXPLevel", 0);
+            return data;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -113,25 +128,9 @@ public class SaveManager {
         if (files == null) return new String[0];
         List<String> names = new ArrayList<>();
         for (File f : files) {
-            File worldFile = new File(f, WORLD_FILE);
-            if (worldFile.exists()) names.add(f.getName());
+            if (new File(f, WORLD_FILE).exists()) names.add(f.getName());
         }
         return names.toArray(new String[0]);
-    }
-
-    public boolean deleteWorld(String worldName) {
-        File dir = new File(context.getFilesDir(), WORLDS_DIR + File.separator + worldName);
-        return deleteRecursive(dir);
-    }
-
-    private boolean deleteRecursive(File file) {
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            if (children != null) {
-                for (File child : children) deleteRecursive(child);
-            }
-        }
-        return file.delete();
     }
 
     public void saveSettings(String key, String value) {

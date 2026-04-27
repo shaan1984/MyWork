@@ -1,16 +1,15 @@
 package com.minecraft2.android;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 import com.minecraft2.android.save.SaveManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private SaveManager saveManager;
 
@@ -48,11 +47,12 @@ public class MainActivity extends AppCompatActivity {
             options = new String[]{"+ New World"};
         }
 
+        final String[] finalWorlds = worlds;
         builder.setItems(options, (dialog, which) -> {
             if (which == options.length - 1) {
                 showNewWorldDialog();
             } else {
-                launchGame(worlds[which], -1);
+                launchGame(finalWorlds[which], -1);
             }
         });
         builder.setNegativeButton("Cancel", null);
@@ -98,18 +98,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSettingsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Settings");
-        builder.setMessage("Graphics: High\nSound: On\nControls: Default\nRender Distance: 8 chunks\n\nSettings can be adjusted in-game.");
-        builder.setPositiveButton("OK", null);
-        builder.show();
+        new AlertDialog.Builder(this)
+                .setTitle("Settings")
+                .setMessage("Graphics: High\nSound: On\nRender Distance: 8 chunks")
+                .setPositiveButton("OK", null).show();
     }
 
     private void showAboutDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("About Minecraft 2");
-        builder.setMessage(getString(R.string.about_text));
-        builder.setPositiveButton("OK", null);
-        builder.show();
+        new AlertDialog.Builder(this)
+                .setTitle("About Minecraft 2")
+                .setMessage(getString(R.string.about_text))
+                .setPositiveButton("OK", null).show();
     }
 }
